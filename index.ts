@@ -26,7 +26,7 @@ interface ConverterInput {
 
 interface ConverterOutput {
   payload?: string, // gzip compressed, base64 encoded
-  error?: unknown
+  error?: string
 }
 
 function convert (converter: Converter, input: ConverterInput): ConverterOutput {
@@ -44,8 +44,15 @@ function convert (converter: Converter, input: ConverterInput): ConverterOutput 
   } catch (e: unknown) {
     console.error(`ERROR: ${e}`)
 
-    return {
-      error: e
+    if (e instanceof Error) {
+      console.debug(e.stack)
+      return {
+        error: e.message
+      }
+    } else {
+      return {
+        error: 'unknown error'
+      }
     }
   }
 }
